@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  <title n:ifset="$title">{$title}</title>
+
+<?
+//generátor https://virtualsky.lco.global/embed/custom.html
+//pro zmenu barvy souhvezdi najit ve zdrojaku:
+//constellation:"rgba(255,255,255,0.8)",
+//constellationboundary
+?>
+
+<link rel="stylesheet" href="{$basePath}/css/style.css">
+<style>
+#starsContent { position:relative;top:0;left:0; width: {$docWidth*$resolutionScale}mm;height: {$docHeight*$resolutionScale}mm;overflow:hidden;}
+#starsPrintMask { position:absolute;top:0;left:0;width:100%;}
+#starmapBox { position:absolute;top:{$starsTop*$resolutionScale|noescape}mm;left:{(($docWidth-$starsWidth)/2)*$resolutionScale|noescape}mm;width:{$starsWidth*$resolutionScale}mm;height:{$starsWidth*$resolutionScale}mm;}
+#starmap { width:100%;height:100%; }
+.virtualskybutton { display:none !important; }
+#starmapText { width:100%;position:absolute;text-align:center;line-height:200%;font-weight:500;}
+#starmapPlace { line-height:160%;}
+
+
+{if $data->format=='60x90' || $data->format=='90x60'}
+#starmapText { font-size:{$resolutionScale*17}mm;bottom:{$resolutionScale*30}mm;}
+#starmapPlace { font-size:{$resolutionScale*10}mm;margin:{$resolutionScale*37}mm 0;}
+{elseif $data->format=='50x70'}
+#starmapText { font-size:{$resolutionScale*14}mm;bottom:{$resolutionScale*13}mm;}
+#starmapPlace { font-size:{$resolutionScale*8}mm;margin:{$resolutionScale*19}mm 0;}
+{else}
+#starmapText { font-size:{$resolutionScale*9}mm;bottom:{$resolutionScale*10}mm;line-height:160%;}
+#starmapPlace { font-size:{$resolutionScale*5}mm;margin:{$resolutionScale*5}mm 0;}
+{/if}
+
+</style>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<!--[if lt IE 9]><script src="excanvas.min.js"></script><![endif]-->
+<script src="/virtualsky/stuquery.js"></script>
+<script src="/virtualsky/virtualsky.js" type="text/javascript"></script>
+<script src="/js/script.js"></script>
+<script>
+
+S(document).ready(function() {
+      createStars({ 
+      type:{$data->type},
+      format:{$data->format},
+      color:{$data->color},
+      latitude:{$data->latitude},
+      longitude:{$data->longitude},
+      date:{$dateF},
+      scalestars:{$scalestars}
+      });
+});
+
+
+function print(quality = 1) {
+		const filename  = {$pdfFileName};
+
+		html2canvas(document.querySelector('#starsContent'), 
+								{ scale: quality }
+						 ).then(canvas => {
+			let pdf = new jsPDF('p', 'mm', [{$docWidth}, {$docHeight}]); 
+			pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, {$docWidth}, {$docHeight});
+			pdf.save(filename);
+		});
+	}
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.0/jspdf.min.js"></script>  
+{* pozor v aktuální verzi je bug *}
+<script src="/js/html2canvas.js"></script>
+
+</head>
+<body>
+<button style="margin:20px;" onclick="print()">Vygenerovat PDF</button>
+<div id="starsContent">
+  <div id="starmapBox"><div id="starmap"></div></div>
+  <img src="" id="starsPrintMask">
+  <div id="starmapText">
+      {$data->text1}
+     <br />{$data->text2}
+     <br />{$data->text3}
+     <br />{$data->text4}
+     
+     <div id="starmapPlace">
+          {$data->place}
+          <br /><span id="starsGPS">{$gps}</span>
+          <br />{$date}
+     </div>
+  </div>
+</div>  
+</body>
+</html>

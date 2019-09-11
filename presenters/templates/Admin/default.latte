@@ -1,0 +1,48 @@
+{block content}
+{include smallMenu}
+<div class="editorBlock">
+   <div class="content">
+        <div class="orderFullCol">
+              <h2>Objednávky</h2>              
+              <div class="orderFullColIn">
+                 {form orderForm}
+                 {input send}
+                 <table class="ordersTable">
+                    <tr>
+                        <th>ID</th>
+                        <th>Uživatel</th>
+                        <th>Adresa</th>
+                        <th>Doprava + cena</th>
+                        <th>Produkty</th>
+                        <th>Poznámka</th>
+                    </tr>
+                    {foreach $orders as $order}
+                       <tr style="background:{$stateColors[$order->order_state]|noescape}">
+                          <td>{$order->id}</td>
+                          <td>{$order->name}<br />{$order->email}<br />{$order->phone}</td>
+                          <td>{$order->street}<br />{$order->city}<br />{$order->zipcode}<br />{$order->state}</td>
+                          <td>{$paymentMethods[$order->payment]}<br />{$deliveryMethods[$order->delivery]}<br />{$order->date}<br /><strong>{$order->price}Kč</strong></td>
+                          <td>
+                              {foreach $order->related('products.orders_id') as $product}
+                                  {var $data= \Nette\Utils\Json::decode($product->data);}
+                                  <a href="{link Print:stars $product->id}">{$product->type} {$data->format} ({$product->price}Kč, Rám: {$data->frame})</a><br />
+                              {/foreach}
+                          </td>
+                          <td>
+                             <select name="order_state{$order->id}">
+                                  <option value="0" {if $order->order_state==0}selected=""{/if}>Zpracovává se</option>
+                                  <option value="1" {if $order->order_state==1}selected=""{/if}>Odesláno</option>
+                                  <option value="2" {if $order->order_state==2}selected=""{/if}>Storno</option>
+                             </select> 
+                             <br /><textarea name="note{$order->id}">{$order->note}</textarea>                         
+                          </td>
+                       </tr>
+                    {/foreach}
+                 </table>
+                 {input send2}
+                 {/form}
+              </div>
+        </div>  
+   </div>
+</div>
+{/block}

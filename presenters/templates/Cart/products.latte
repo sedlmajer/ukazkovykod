@@ -1,0 +1,86 @@
+{block content}
+{include smallMenu}
+<div class="editorBlock">
+   <div class="content">
+        <div class="orderFullCol">
+              {include ../starsPreview.latte}             
+              <div class="orderFullColIn">
+                  <h1>Produkty v košíku</h1> 
+                  <p n:if="$cart->getItemsCount()>0">Zkontrolujte, prosím, že všechny produkty odpovídají vašim představám.</p>
+                  <p n:if="$cart->getItemsCount()==0">Košík je prázdný.<br /><br /><br /><br /><br /></p>
+                  
+                  {var $productCounter=0}
+                  {foreach $cart->products as $key => $product}
+                  {php $productCounter++}
+                      <h2 style="padding-left:0">{$productCounter}. produkt</h2>
+<div class="cartProductBlock">                      
+<div id="previewContent{$productCounter}" class="previewContent">        
+ <div id="starsContent{$productCounter}" class="starsContent">
+  <div id="starmapBox{$productCounter}" class="starmapBox"><div id="starmap{$productCounter}" class="starmap"></div></div>
+  <img src="" id="starsPrintMask{$productCounter}" class="starsPrintMask">
+  <div id="starmapText{$productCounter}" class="starmapText">
+      <span id="starsText1"{$productCounter}>{$product->data->text1}</span>
+     <br /><span id="starsText2{$productCounter}">{$product->data->text2}</span>
+     <br /><span id="starsText3{$productCounter}">{$product->data->text3}</span>
+     <br /><span id="starsText4{$productCounter}">{$product->data->text4}</span>
+     
+     <div id="starmapPlace{$productCounter}" class="starmapPlace">
+         <span id="starsPlace{$productCounter}">{$product->data->place}</span>
+          <br /><span id="starsGPS{$productCounter}"></span>
+          {php 
+            \Tracy\Debugger::barDump($product->data);
+            $datetime = Nette\Utils\DateTime::from($product->data->date.' '.$product->data->time);
+            if($product->data->showTime) $date=$datetime->format("j. n. Y G:i");
+            else  $date=$datetime->format("j. n. Y");
+            
+            $datetime->setTimezone(new \DateTimeZone("UTC"));
+            $product->data->dateUTC=$datetime->format("Y-m-d H:i:s e");
+          }
+          
+          <br /><span id="starsDate{$productCounter}">{$date}</span>
+     </div>
+  </div>
+ </div>
+ <script>
+    S(document).ready(function() {
+      var data={$product->data};
+      data.scalestars=1;    
+      data.date=data.dateUTC;      
+      data.format="preview";
+      console.info(data);
+      createStars(data,{$productCounter});
+      
+      var zoom=(document.getElementById('previewContent{$productCounter}').offsetWidth-5)/600;
+      $(".starsContent").css({
+        'transform': 'scale('+zoom+')',
+        '-ms-transform': 'scale('+zoom+')',
+        '-moz-transform': 'scale('+zoom+')',
+        '-webkit-transform': 'scale('+zoom+')',
+        'transform-origin': 'left top',
+        '-ms-transform-origin': 'left top',
+        '-moz-transform-origin': 'left top',
+        '-webkit-transform-origin': 'left top'
+    });
+    });
+ </script>
+</div>
+
+<div class="cartProductInfo">                    
+                      Formát: {$product->data->format}cm
+                      <br />Rám: {$frameTypes[$product->data->frame]}
+                      <br />Cena: {$product->price} Kč
+                      <br /><a n:href="Editor:stars $key"><button>upravit produkt</button></a>
+                      
+                      <br /><a onclick="return window.confirm('Opravdu chcete tento produkt odebrat z košíku?')" n:href="Cart:removeProduct $key"><button>Odstranit</button></a>
+</div> 
+</div>                      
+                  {/foreach}
+              </div>
+              <div class="cartButtonsBlock">
+                  <a n:if="$cart->getItemsCount()==1" n:href="Editor:stars key($cart->products)">&lt; &nbsp; krok zpět</a> 
+                  <a n:if="$cart->getItemsCount()>0" href="{link Cart:order}"><button class="orderButton">Další&nbsp;krok</button></a>
+              </div>
+        </div>  
+   </div>
+</div>
+{/block}

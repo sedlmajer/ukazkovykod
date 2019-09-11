@@ -1,0 +1,67 @@
+{block content}
+{include smallMenu}
+<div class="editorBlock">
+   <div class="content">
+        <div class="orderFullCol">
+    <script>    
+      function imgSelect(elem) {
+          $(elem).closest(".imgselectBlock").find(".imgselActive").removeClass("imgselActive");
+          $(elem).addClass("imgselActive");
+          $(elem).closest(".imgselectBlock").find("input").val($(elem).attr("data-value"));
+      } 
+      
+      function calculatePrice()
+      { 
+          var paymentPrices={$paymentPrices};
+          var price={$prodPrice}+paymentPrices[$('input[name=payment]').val()];
+      
+          $("#calculatedPrice").html(price);
+      }
+     </script>
+          
+            {form sendOrderForm}
+            <h2>Doručovací adresa</h2>
+               <table class="orderFormTab">
+                   <!-- Jednoduché vykreslení chyb -->
+                   <tr n:if="$form->hasErrors()"><td>
+                        <ul class="errors">
+                            <li n:foreach="$form->errors as $error">{$error}</li>
+                        </ul>
+                    </td></tr>
+               
+                    {var $fieldName='name'}<tr><td>{label $fieldName /}</td><td>{input $fieldName}</td><td>{inputError $fieldName}</td></tr>
+                    {var $fieldName='email'}<tr><td>{label $fieldName /}</td><td>{input $fieldName}</td><td>{inputError $fieldName}</td></tr>
+                    {var $fieldName='phone'}<tr><td>{label $fieldName /}</td><td>{input $fieldName}</td><td>{inputError $fieldName}</td></tr>
+                    {var $fieldName='street'}<tr><td>{label $fieldName /}</td><td>{input $fieldName}</td><td>{inputError $fieldName}</td></tr>
+                    {var $fieldName='city'}<tr><td>{label $fieldName /}</td><td>{input $fieldName}</td><td>{inputError $fieldName}</td></tr>
+                    {var $fieldName='zipcode'}<tr><td>{label $fieldName /}</td><td>{input $fieldName}</td><td>{inputError $fieldName}</td></tr>
+                    {var $fieldName='state'}<tr><td>{label $fieldName /}</td><td>{input $fieldName}</td><td>{inputError $fieldName}</td></tr>
+              </table> 
+              
+              <h2>Doprava</h2>
+              <div class="imgselectBlock">
+                    {input delivery}
+                    {foreach $deliveryMethods as $item}
+                        <div onclick="imgSelect(this);calculatePrice()" data-value="{$item->id}" class="imgselBlock {$form[delivery]->getValue()==$item->id ? 'imgselActive'}" data-selgroup="type"><div class="imgselBlockIn"><img src="/img/delivery{$item->id}.png" /><br />(ZDARMA)</div></div>
+                    {/foreach}
+              </div>
+
+              <h2>Platba</h2>
+              <div class="imgselectBlock">
+                    {input payment}
+                    {foreach $paymentMethods as $item}
+                        <div onclick="imgSelect(this);calculatePrice()" data-value="{$item->id}" class="imgselBlock {$form[payment]->getValue()==$item->id ? 'imgselActive'}" data-selgroup="type"><div class="imgselBlockIn"><img src="/img/payment{$item->id}.png" /><br />{$item->name}</div></div>
+                    {/foreach}
+              </div>
+              <div class="orderPrice">
+                   Celková cena: <span id="calculatedPrice">{$prodPrice}</span> Kč
+              </div>
+              
+              <div class="cartButtonsBlock">
+                  <a href="{link :products}">&lt; &nbsp; krok zpět</a> {input send}
+              </div>
+            {/form}  
+        </div>  
+   </div>
+</div>
+{/block}

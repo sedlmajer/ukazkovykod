@@ -1,0 +1,151 @@
+{**
+ * @param string   $basePath web base path
+ * @param array    $flashes  flash messages
+ *}
+{define cart}
+<div n:if="$cart->getItemsCount()>0 || $user->isLoggedIn()" id="cartBlock">
+   <div class="content">
+        <a href="{link Cart:products}" style="float:left;">V košíku máte {$cart->getItemsCount()} {if $cart->getItemsCount()==1}položku{elseif $cart->getItemsCount()< 5}položky{else}položek{/if}.</a>
+        <div n:if="$user->isLoggedIn()" style="float:left;font-weight:bold;margin-left:10px;"> Přihlášen: {$user->getIdentity()->id} - <a href="{link Admin:out}">odhlásit</a></div>
+        <a href="{link Cart:products}" style="float:right;font-weight:bold;">Přejít do košíku a zobrazit objednávku.</a>
+   </div>
+</div>
+{/define}
+{define cartSpace}<div n:if="$cart->getItemsCount()>0 || $user->isLoggedIn()" id="cartSpaceBlock"></div>{/define}
+
+{define smallMenu}
+<div id="fixedHeaderBlock">
+  {include cart}
+  <div id="smallMenuBlock">
+      <div class="content">
+          <a href="/" id="smallMenuLogo"></a>
+          <a href="{link Editor:stars}"><button  style="margin: 26px 0;" id="detMenuCreateGift">Chci vytvořit dárek &nbsp;&nbsp;&nbsp;&gt;</button></a>
+      </div>
+  </div>
+</div>
+ {include cartSpace}
+{/define} 
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+  <title n:ifset="$title">{$title}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{$basePath}/css/style.css">
+	{block head}{/block}
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
+	<script src="{$basePath}/js/main.js"></script>
+  <script src="/js/script.js"></script>
+   <script src="/js/jquery-ensure-max-length.min.js"></script>
+</head>
+
+<body>
+	{include content}
+
+	{block scripts}	{/block}
+
+<div id="feedback" n:if="$showReviews">
+   <div class="content">
+        <h2>OHLASY ZÁKAZNÍKŮ</h2>
+        <div class="feedbackBlock">
+             <div class="feedback">
+                  Děkuji za tuto krásnou věc, ihned jsem si ji zamilovala! Kvalita je neuvěřitelná a barvy jsou krásně syté, což jen podtrhuje luxusní dojem z této dekorace. Za sebe velice oceňuji tento jedinečný dárek, který stojí za to.
+             </div>
+             <div class="feedbackName">
+                 <img src="/img/face-f1.png" />
+                 Kateřina Králová
+             </div>
+        </div>
+        <div class="feedbackBlock">
+             <div class="feedback">
+                  Absolutně miluji svou mapu hvězd. Použila jsem ji v létě na svatbě jako "knihu hostů". Je krásná, romantická a zcela jedinečná. K další příležitosti ji pořídím i mým přátelům. 
+             </div>
+             <div class="feedbackName">
+                 <img src="/img/face-f2.png" />
+                 Ivana Zendulková
+             </div>
+        </div>
+        <div class="feedbackBlock">
+             <div class="feedback">
+                  Koupil jsem naši hvězdou oblohu jako dárek k našemu výročí. Netřeba dodávat, že manželka byla dojatá k slzám. Přiznávám, že slzičky byly nakonec i u mě, když jsem viděl, jak ji to vzalo. Skvělý nápad pro každou nezapomenutelnou příležitost. 
+             </div>
+             <div class="feedbackName">
+                 <img src="/img/face-m1.png" />
+                 David Bartík
+             </div>
+        </div>
+        
+        {* nepouzity komentař (Zena) MILUJI TO! Vypadá to tááák roztomile a krásně! Hezčí dárek jsem si nemohla přát. *}
+   </div>
+</div>
+  
+<div id="hpInstaBlock" n:if="$showInstaBlock">
+    <img src="/img/instagram-boxl.jpg" />
+</div>
+
+<div class="whiteBlock" id="faq" n:if="$showFAQ">
+   <div class="content">
+        <h2 class="headlineCenter">Často kladené dotazy</h2>
+        <div class="twoColsCol">
+           <p>
+              <strong>Jak to funguje?</strong>
+              <br />Vyberte si v našem konfigurátoru jakýkoliv čas, v minulosti, ale i v budoucnosti, jakékoliv místo na světe a pár kliknutími vytvořte originální plakát hvězdné oblohy. 
+           </p>
+           <p>
+              <strong>Na jaký papír tisknete?</strong>
+              <br />Plakát hvězdné oblohy tiskneme na vysoce kvalitní, 250-ti gramový papír, určený pro umělecký tisk. Na výběr máme ze tří formátů - velký (60x90), střední (50x70) a malý (30x40).
+           </p>
+          <p>
+              <strong>Jak je plakát zabalen?</strong>
+              <br />Na výběr máte ze dvou možností. Standardně zasíláme plakát v pevném papírovém tubusu. Pokud ovšem chcete, aby si tento krásný dárek mohl obdarovaný rovnou pověsit na stěnu, tak nabízíme možnost, rovnou zakoupit i rám. V tomto případě dojde pečlivě zabalený, již zarámovaný, plakát hvězdné oblohy.
+           </p>
+                         
+        </div>
+        <div class="twoColsCol">
+           <p>
+              <strong>Kolik plakát hvězdné oblohy stojí?</strong>
+              <br />Cena se odvíjí od velikosti a způsobu zabalení tj. zda-li si zvolíte doručení v papírovém tubusu nebo rovnou v rámu dle výběru, kde se cena liší podle velikosti a dekoru. Základní cena za doručení v papírovém tubusu: velký (60x90) 1090 Kč, střední (50x70) 790 Kč a malý (30x40) 490 Kč.
+           </p>      
+           <p>
+              <strong>Jaká je doba dodání?</strong>
+              <br />Vždy se snažíme, aby zboží bylo u zákazníka co nejrychleji. Garantujeme doručení do 5-ti pracovních dnů. Pokud byste potřebovali objednávku nutně dříve, kontaktujte nás a pokusíme se Vám vyjít vstříc.
+           </p>
+           <p>
+              <strong>Na jaké příležitosti se tento dárek hodí?</strong>
+              <br />Plakát hvězdné oblohy nejkrásnějším osobním dárkem, který můžete darovat, ke kterékoliv příležitosti - svatba, narozeniny, výročí, požádání o ruku, první setkání, ukončení školy, úspěch v práci, nový domov,... 
+           </p>
+        </div>
+   </div>
+</div>  
+  
+<div id="footerBlock">
+     <div id="footerLinks">
+          <a href="{link Info:terms}">Obchodní podmínky</a>
+          <a href="{link Info:contact}">Kontakt</a>
+          <a href="/product/stars/#faq">Časté dotazy</a>
+          <a href="{link Info:delivery}">Doprava a platba</a>
+     </div>
+     <div id="footerIcones">
+          <a href="#"><img src="/img/facebook.png" /></a>
+          <a href="#"><img src="/img/instagram.png" /></a>
+          <a href="#"><img src="/img/youtube.png" /></a>
+     </div>
+</div>
+<div id="footerCopy">
+   <div class="content">
+       &copy; 2019 - Všechna práva vyhrazena
+   </div>
+</div>  
+
+          {snippet flashes}
+            <script type="text/javascript">
+             {foreach $flashes as $flash}            
+                    flashMes.add({json_encode($flash)|noescape});
+             {/foreach}
+            </script> 
+          {/snippet}
+</body>
+</html>
